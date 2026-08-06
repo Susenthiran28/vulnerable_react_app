@@ -16,7 +16,7 @@ jobs:
 
       # Run Vigilnz Scan
       - name: Run Vigilnz Scan
-        uses: vigilnz/vigilnz-scan-action@master
+        uses: vigilnz/vigilnz-scan-action@v1
         with:
           vigilnzApiKey: ${{ secrets.VIGILNZ_API_KEY }}
           scanTypes: "sca,secret"
