@@ -22,6 +22,7 @@ jobs:
           scanTypes: "sca,secret"
           environment: "dev"
           projectName: "Github_Action"
+          waitForCompletion: true
 
       # Upload results (if action generates reports)
       - name: Upload Scan Results
