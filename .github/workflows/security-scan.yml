@@ -18,10 +18,10 @@ jobs:
       - name: Run Vigilnz Scan
         uses: vigilnz/vigilnz-scan-action@v1
         with:
-          # vigilnzApiKey: ${{ secrets.VIGILNZ_API_KEY }}
-          # environment: "dev"
-          vigilnzApiKey: ${{ secrets.VIGILNZ_API_KEY_PROD }}
-          environment: "prod"
+          vigilnzApiKey: ${{ secrets.VIGILNZ_API_KEY }}
+          environment: "dev"
+          # vigilnzApiKey: ${{ secrets.VIGILNZ_API_KEY_PROD }}
+          # environment: "prod"
           scanTypes: "sca,secret"
           projectName: "Github_Action"
           waitForCompletion: true
