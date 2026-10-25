@@ -16,7 +16,7 @@ function XssComplex() {
     const commentNode = document.createElement('div');
 
     // Vulnerability: Directly inserting HTML from user input
-    commentNode.innerHTML = `<p>${comment}</p>`;
+commentNode.textContent = comment;
     commentsContainer.appendChild(commentNode);
 
     setComment(''); // Reset comment field
@@ -37,7 +37,7 @@ function XssComplex() {
         <button onClick={handleUnsafeRender}>Render Text</button>
         <div
           style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}
-          dangerouslySetInnerHTML={{ __html: output }}
+          children={output}
         />
       </div>
 
@@ -74,7 +74,9 @@ function XssComplex() {
         />
         <button
           onClick={() =>
-            document.getElementById('dynamic').innerHTML = output
+
+			document.getElementById('dynamic').textContent = output
+
           }
         >
           Inject Payload

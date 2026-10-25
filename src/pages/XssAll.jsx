@@ -24,7 +24,7 @@ function XssAllExamples() {
     const commentsContainer = document.getElementById('comments');
     const commentNode = document.createElement('div');
 
-    commentNode.innerHTML = `<p>${comment}</p>`; // Vulnerable to DOM Injection
+		commentNode.textContent = comment;
     commentsContainer.appendChild(commentNode);
 
     setComment(''); // Reset comment input
@@ -54,7 +54,11 @@ function XssAllExamples() {
         <button onClick={handleUnsafeRender}>Render Content</button>
         <div
           style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}
-          dangerouslySetInnerHTML={{ __html: dynamicContent }}
+const sanitizedContent = DOMPurify.sanitize(dynamicContent);
+          <div
+            style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
+          />
         />
       </div>
 
@@ -87,7 +91,7 @@ function XssAllExamples() {
         <button
           id="eventButton"
           onClick={() => {
-            document.getElementById('injectedButton').innerHTML = attributeValue;
+	document.getElementById('injectedButton').textContent = attributeValue;
           }}
         >
           Inject Payload
@@ -129,7 +133,7 @@ function XssAllExamples() {
         />
         <button onClick={saveToStorage}>Save to LocalStorage</button>
         <p>Stored Data:</p>
-        <div dangerouslySetInnerHTML={{ __html: storageContent }} />
+<div>{storageContent}</div>
       </div>
 
       <hr />
