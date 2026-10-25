@@ -22,7 +22,7 @@ function XssTest() {
       {/* Unsafe rendering of user input (XSS vulnerable) */}
       <div>
         <h3>Output (Unsafe):</h3>
-        <p dangerouslySetInnerHTML={{ __html: userInput }} />
+		<p>{userInput}</p>
       </div>
     </div>
   );

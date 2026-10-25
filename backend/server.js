@@ -73,12 +73,15 @@ app.get("/protected", (req, res) => {
     return res.status(403).json({ message: "Token gerekli!" });
   }
 
-  jwt.verify(token, SECRET_KEY, async (err, decoded) => {
+		jwt.verify(token, SECRET_KEY, { algorithms: ['HS256'] }, async (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Yetkisiz erişim!" });
     }
 
-    const user = await User.findById(decoded.id).select("username");
+if (!mongoose.isValidObjectId(decoded.id)) {
+		return res.status(400).json({ message: "Geçersiz kullanıcı id!" });
+	}
+	const user = await User.findById(mongoose.Types.ObjectId(decoded.id)).select("username");
     if (!user) {
       return res.status(404).json({ message: "Kullanıcı bulunamadı!" });
     }
