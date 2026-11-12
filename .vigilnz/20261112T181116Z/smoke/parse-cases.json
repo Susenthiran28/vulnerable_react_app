@@ -1,0 +1,33 @@
+{
+  "runnable": 5,
+  "cases": [
+    {
+      "name": "syntax:src/config.js",
+      "kind": "syntax",
+      "file": "src/config.js"
+    },
+    {
+      "name": "syntax:backend/server.js",
+      "kind": "syntax",
+      "file": "backend/server.js"
+    },
+    {
+      "name": "syntax:src/components/XssTest.jsx",
+      "kind": "syntax",
+      "file": "src/components/XssTest.jsx"
+    },
+    {
+      "name": "syntax:src/pages/Xss.jsx",
+      "kind": "syntax",
+      "file": "src/pages/Xss.jsx"
+    },
+    {
+      "name": "syntax:src/pages/XssAll.jsx",
+      "kind": "syntax",
+      "file": "src/pages/XssAll.jsx"
+    }
+  ],
+  "onDiskSmoke": [
+    ".vigilnz/20261112T181116Z/smoke/src__config.smoke.js"
+  ]
+}

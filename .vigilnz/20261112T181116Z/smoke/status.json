@@ -1,0 +1,9 @@
+{
+  "targets": [
+    "src/components/XssTest.jsx"
+  ],
+  "kept": null,
+  "dropped": [
+    ".vigilnz/20261112T181116Z/smoke/src__components__XssTest.smoke.jsx (failed on current code)"
+  ]
+}

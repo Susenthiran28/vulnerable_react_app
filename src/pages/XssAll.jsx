@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import DOMPurify from 'dompurify';
 
 function XssAllExamples() {
   const [inputText, setInputText] = useState('');
@@ -7,6 +8,8 @@ function XssAllExamples() {
   const [attributeValue, setAttributeValue] = useState('');
   const [storageContent, setStorageContent] = useState('');
   const refInput = useRef(null);
+
+  const sanitizeHtml = (value) => DOMPurify.sanitize(value || '');
 
   // Effect Hook for Storage-based XSS
   useEffect(() => {
@@ -23,8 +26,10 @@ function XssAllExamples() {
   const submitComment = () => {
     const commentsContainer = document.getElementById('comments');
     const commentNode = document.createElement('div');
+    const paragraphNode = document.createElement('p');
 
-    commentNode.innerHTML = `<p>${comment}</p>`; // Vulnerable to DOM Injection
+    paragraphNode.textContent = comment;
+    commentNode.appendChild(paragraphNode);
     commentsContainer.appendChild(commentNode);
 
     setComment(''); // Reset comment input
@@ -54,7 +59,7 @@ function XssAllExamples() {
         <button onClick={handleUnsafeRender}>Render Content</button>
         <div
           style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}
-          dangerouslySetInnerHTML={{ __html: dynamicContent }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(dynamicContent) }}
         />
       </div>
 
@@ -87,7 +92,7 @@ function XssAllExamples() {
         <button
           id="eventButton"
           onClick={() => {
-            document.getElementById('injectedButton').innerHTML = attributeValue;
+            document.getElementById('injectedButton').textContent = attributeValue;
           }}
         >
           Inject Payload
@@ -129,7 +134,7 @@ function XssAllExamples() {
         />
         <button onClick={saveToStorage}>Save to LocalStorage</button>
         <p>Stored Data:</p>
-        <div dangerouslySetInnerHTML={{ __html: storageContent }} />
+        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(storageContent) }} />
       </div>
 
       <hr />
