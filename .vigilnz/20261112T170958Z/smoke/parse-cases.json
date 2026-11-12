@@ -1,0 +1,138 @@
+{
+  "runnable": 8,
+  "cases": [
+    {
+      "name": "syntax:src/pages/nosql/Login.jsx",
+      "kind": "syntax",
+      "file": "src/pages/nosql/Login.jsx"
+    },
+    {
+      "name": "syntax:src/pages/nosql/ProtectedPage.jsx",
+      "kind": "syntax",
+      "file": "src/pages/nosql/ProtectedPage.jsx"
+    },
+    {
+      "name": "syntax:src/pages/nosql/Register.jsx",
+      "kind": "syntax",
+      "file": "src/pages/nosql/Register.jsx"
+    },
+    {
+      "name": "syntax:package-lock.json",
+      "kind": "syntax",
+      "file": "package-lock.json",
+      "skip": "no syntax checker for .json"
+    },
+    {
+      "name": "import:npm:axios",
+      "kind": "import",
+      "skip": "package not installed (no node_modules/axios)"
+    },
+    {
+      "name": "syntax:backend/server.js",
+      "kind": "syntax",
+      "file": "backend/server.js"
+    },
+    {
+      "name": "syntax:backend/package-lock.json",
+      "kind": "syntax",
+      "file": "backend/package-lock.json",
+      "skip": "no syntax checker for .json"
+    },
+    {
+      "name": "import:npm:body-parser",
+      "kind": "import",
+      "skip": "package not installed (no node_modules/body-parser)"
+    },
+    {
+      "name": "syntax:via axios@1.15.1 -\u003e follow-redirects@1.16.0",
+      "kind": "syntax",
+      "file": "via axios@1.15.1 -\u003e follow-redirects@1.16.0",
+      "skip": "no syntax checker for .0"
+    },
+    {
+      "name": "import:npm:follow-redirects",
+      "kind": "import",
+      "skip": "package not installed (no node_modules/follow-redirects)"
+    },
+    {
+      "name": "syntax:via axios@1.15.1 -\u003e form-data@4.0.5",
+      "kind": "syntax",
+      "file": "via axios@1.15.1 -\u003e form-data@4.0.5",
+      "skip": "no syntax checker for .5"
+    },
+    {
+      "name": "import:npm:form-data",
+      "kind": "import",
+      "skip": "package not installed (no node_modules/form-data)"
+    },
+    {
+      "name": "syntax:via jsonwebtoken@9.0.2 -\u003e jws@3.2.2",
+      "kind": "syntax",
+      "file": "via jsonwebtoken@9.0.2 -\u003e jws@3.2.2",
+      "skip": "no syntax checker for .2"
+    },
+    {
+      "name": "import:npm:jws",
+      "kind": "import",
+      "skip": "package not installed (no node_modules/jws)"
+    },
+    {
+      "name": "import:npm:mongoose",
+      "kind": "import",
+      "skip": "package not installed (no node_modules/mongoose)"
+    },
+    {
+      "name": "syntax:via react-scripts@5.0.1 -\u003e webpack-dev-server@4.15.2 -\u003e express@4.22.1 -\u003e proxy-addr@2.0.7",
+      "kind": "syntax",
+      "file": "via react-scripts@5.0.1 -\u003e webpack-dev-server@4.15.2 -\u003e express@4.22.1 -\u003e proxy-addr@2.0.7",
+      "skip": "no syntax checker for .7"
+    },
+    {
+      "name": "import:npm:proxy-addr",
+      "kind": "import",
+      "skip": "package not installed (no node_modules/proxy-addr)"
+    },
+    {
+      "name": "syntax:via react-scripts@5.0.1 -\u003e webpack-dev-server@4.15.2 -\u003e express@4.22.1 -\u003e qs@6.14.2",
+      "kind": "syntax",
+      "file": "via react-scripts@5.0.1 -\u003e webpack-dev-server@4.15.2 -\u003e express@4.22.1 -\u003e qs@6.14.2",
+      "skip": "no syntax checker for .2"
+    },
+    {
+      "name": "import:npm:qs",
+      "kind": "import",
+      "skip": "package not installed (no node_modules/qs)"
+    },
+    {
+      "name": "syntax:via react-router-dom@7.14.1 -\u003e react-router@7.14.1",
+      "kind": "syntax",
+      "file": "via react-router-dom@7.14.1 -\u003e react-router@7.14.1",
+      "skip": "no syntax checker for .1"
+    },
+    {
+      "name": "syntax:src/pages/Home.jsx",
+      "kind": "syntax",
+      "file": "src/pages/Home.jsx"
+    },
+    {
+      "name": "import:npm:react-router",
+      "kind": "import",
+      "skip": "package not installed (no node_modules/react-router)"
+    },
+    {
+      "name": "syntax:src/components/XssTest.jsx",
+      "kind": "syntax",
+      "file": "src/components/XssTest.jsx"
+    },
+    {
+      "name": "syntax:src/pages/Xss.jsx",
+      "kind": "syntax",
+      "file": "src/pages/Xss.jsx"
+    },
+    {
+      "name": "syntax:src/pages/XssAll.jsx",
+      "kind": "syntax",
+      "file": "src/pages/XssAll.jsx"
+    }
+  ]
+}
