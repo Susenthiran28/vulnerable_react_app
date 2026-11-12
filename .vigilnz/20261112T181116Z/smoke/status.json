@@ -1,0 +1,9 @@
+{
+  "targets": [
+    "backend/server.js"
+  ],
+  "kept": null,
+  "dropped": [
+    ".vigilnz/20261112T181116Z/smoke/backend__server.smoke.js (failed on current code)"
+  ]
+}

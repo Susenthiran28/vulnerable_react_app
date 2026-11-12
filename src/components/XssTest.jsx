@@ -19,10 +19,10 @@ function XssTest() {
         onChange={(e) => setUserInput(e.target.value)}
       />
 
-      {/* Unsafe rendering of user input (XSS vulnerable) */}
+      {/* Safe rendering of user input as plain text */}
       <div>
-        <h3>Output (Unsafe):</h3>
-        <p dangerouslySetInnerHTML={{ __html: userInput }} />
+        <h3>Output (Safe):</h3>
+        <p>{userInput}</p>
       </div>
     </div>
   );
