@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import DOMPurify from 'dompurify';
 
 function XssAllExamples() {
   const [inputText, setInputText] = useState('');
@@ -8,8 +7,6 @@ function XssAllExamples() {
   const [attributeValue, setAttributeValue] = useState('');
   const [storageContent, setStorageContent] = useState('');
   const refInput = useRef(null);
-
-  const sanitizeHtml = (value) => DOMPurify.sanitize(value || '');
 
   // Effect Hook for Storage-based XSS
   useEffect(() => {
@@ -57,10 +54,9 @@ function XssAllExamples() {
           onChange={(e) => setInputText(e.target.value)}
         />
         <button onClick={handleUnsafeRender}>Render Content</button>
-        <div
-          style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}
-          dangerouslySetInnerHTML={{ __html: sanitizeHtml(dynamicContent) }}
-        />
+        <div style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}>
+          {dynamicContent}
+        </div>
       </div>
 
       <hr />
@@ -134,7 +130,7 @@ function XssAllExamples() {
         />
         <button onClick={saveToStorage}>Save to LocalStorage</button>
         <p>Stored Data:</p>
-        <div dangerouslySetInnerHTML={{ __html: sanitizeHtml(storageContent) }} />
+        <div>{storageContent}</div>
       </div>
 
       <hr />

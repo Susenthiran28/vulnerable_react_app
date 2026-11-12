@@ -22,9 +22,9 @@ function XssComplex() {
     <div>
       <h2>Complex XSS Test Page</h2>
 
-      {/* Example 1: Unsafe input rendering */}
+      {/* Example 1: Escaped text output */}
       <div>
-        <h3>Unsafe Text Output</h3>
+        <h3>Text Output (React-escaped)</h3>
         <input
           type="text"
           placeholder="Enter text"
@@ -32,15 +32,16 @@ function XssComplex() {
         />
         <button onClick={handleUnsafeRender}>Render Text</button>
         <div style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}>
+          {/* Render only as JSX text. Do not switch to dangerouslySetInnerHTML without sanitization. */}
           {output}
         </div>
       </div>
 
       <hr />
 
-      {/* Example 2: Comment Section Vulnerability */}
+      {/* Example 2: Comment section rendered as escaped text */}
       <div>
-        <h3>Submit Comment (DOM Injection)</h3>
+        <h3>Submit Comment (React-escaped text)</h3>
         <textarea
           placeholder="Enter your comment"
           rows="3"
@@ -60,9 +61,9 @@ function XssComplex() {
 
       <hr />
 
-      {/* Example 3: Inline Event Handler XSS */}
+      {/* Example 3: Escaped payload display */}
       <div>
-        <h3>Inline Event XSS Test</h3>
+        <h3>Inline Event Payload Test (Escaped)</h3>
         <p>Enter a payload like:</p>
         <code>
           &lt;img src="invalid" onerror="alert('XSS Triggered!')" /&gt;
@@ -74,7 +75,7 @@ function XssComplex() {
           onChange={(e) => setOutput(e.target.value)}
         />
         <button onClick={() => setDynamicOutput(output)}>
-          Inject Payload
+          Show Payload as Text
         </button>
         <div id="dynamic" style={{ marginTop: '10px' }}>{dynamicOutput}</div>
       </div>
