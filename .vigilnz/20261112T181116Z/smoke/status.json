@@ -1,9 +1,9 @@
 {
   "targets": [
-    "src/pages/Xss.jsx"
+    "backend/server.js"
   ],
   "kept": null,
   "dropped": [
-    ".vigilnz/20261112T181116Z/smoke/src__pages__Xss.smoke.jsx (failed on current code)"
+    ".vigilnz/20261112T181116Z/smoke/backend__server.smoke.js (failed on current code)"
   ]
 }
