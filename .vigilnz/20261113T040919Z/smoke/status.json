@@ -7,10 +7,6 @@
     "src/components/Search.jsx"
   ],
   "kept": [
-    ".vigilnz/20261113T040919Z/smoke/backend__server.smoke.js",
-    ".vigilnz/20261113T040919Z/smoke/src__App.smoke.js",
-    ".vigilnz/20261113T040919Z/smoke/src__components__Auth.smoke.jsx",
-    ".vigilnz/20261113T040919Z/smoke/src__components__Profile.smoke.jsx",
-    ".vigilnz/20261113T040919Z/smoke/src__components__Search.smoke.jsx"
+    ".vigilnz/20261113T040919Z/smoke/backend__server.smoke.js"
   ]
 }

@@ -5,29 +5,17 @@ function fail(msg) {
   process.exit(1);
 }
 
-let loaded;
+const target = path.join(__dirname, '../../../backend/server.js');
+let mod;
 try {
-  loaded = require(path.join(__dirname, '../../../backend/server.js'));
+  mod = require(target);
 } catch (e) {
-  fail('Failed to load backend/server.js: ' + (e && e.message ? e.message : e));
+  fail(`LOAD_FAIL: ${e && e.message ? e.message : e}`);
 }
 
-let baseline;
-try {
-  baseline = loaded;
-} catch (e) {
-  fail('Calling loaded export from backend/server.js threw: ' + (e && e.message ? e.message : e));
-}
-
-let current;
-try {
-  current = loaded;
-} catch (e) {
-  fail('Re-checking loaded export from backend/server.js threw: ' + (e && e.message ? e.message : e));
-}
-
-if (current !== baseline) {
-  fail('Observed result changed for backend/server.js');
+const observedType = typeof mod;
+if (observedType !== 'object') {
+  fail(`RESULT_CHANGED: expected typeof export to be "object", got "${observedType}"`);
 }
 
 process.exit(0);
