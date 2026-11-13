@@ -20,6 +20,49 @@ mongoose.connect(uri, {
   useUnifiedTopology: true,
 });
 
+function isPlainObject(value) {
+  return Object.prototype.toString.call(value) === "[object Object]";
+}
+
+function hasUnsafeKeys(value) {
+  if (Array.isArray(value)) {
+    return value.some(hasUnsafeKeys);
+  }
+
+  if (isPlainObject(value)) {
+    return Object.keys(value).some((key) => {
+      if (key.startsWith("$") || key.includes(".")) {
+        return true;
+      }
+      return hasUnsafeKeys(value[key]);
+    });
+  }
+
+  return false;
+}
+
+function getValidatedCredentials(body) {
+  if (!isPlainObject(body) || hasUnsafeKeys(body)) {
+    return null;
+  }
+
+  const { username, password } = body;
+
+  if (
+    typeof username !== "string" ||
+    typeof password !== "string" ||
+    username.trim() === "" ||
+    password.trim() === ""
+  ) {
+    return null;
+  }
+
+  return {
+    username: username.trim(),
+    password,
+  };
+}
+
 // Kullanıcı Şeması
 const User = mongoose.model(
   "User",
@@ -31,12 +74,13 @@ const User = mongoose.model(
 
 // Register Route
 app.post("/register", async (req, res) => {
-  const { username, password } = req.body;
+  const credentials = getValidatedCredentials(req.body);
 
-  if (typeof username !== "string" || typeof password !== "string") {
+  if (!credentials) {
     return res.status(400).json({ message: "Geçersiz giriş verileri!" });
   }
 
+  const { username, password } = credentials;
   const newUser = new User({ username, password });
 
   try {
@@ -49,19 +93,20 @@ app.post("/register", async (req, res) => {
 
 // Login Route
 app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
+  const credentials = getValidatedCredentials(req.body);
 
- /*  if (typeof username !== "string" || typeof password !== "string") {
+  if (!credentials) {
     return res.status(400).json({ message: "Geçersiz giriş verileri!" });
-  } */
+  }
 
-  const user = await User.findOne({ username, password });
+  const { username, password } = credentials;
+  const user = await User.findOne({ username });
 
-  if (!user) {
+  if (!user || user.password !== password) {
     return res.status(401).json({ message: "Giriş başarısız!" });
   }
 
-  const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: "1h" });
+  const token = jwt.sign({ id: user._id }, SECRET_KEY, { algorithm: "HS256", expiresIn: "1h" });
   res.json({ message: "Giriş başarılı!", token });
 });
 
@@ -73,7 +118,7 @@ app.get("/protected", (req, res) => {
     return res.status(403).json({ message: "Token gerekli!" });
   }
 
-  jwt.verify(token, SECRET_KEY, async (err, decoded) => {
+  jwt.verify(token, SECRET_KEY, { algorithms: ["HS256"] }, async (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Yetkisiz erişim!" });
     }

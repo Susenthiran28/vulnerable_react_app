@@ -1,0 +1,12 @@
+{
+  "targets": [
+    "backend/server.js",
+    "src/App.js",
+    "src/components/Auth.jsx",
+    "src/components/Profile.jsx",
+    "src/components/Search.jsx"
+  ],
+  "kept": [
+    ".vigilnz/20261113T040919Z/smoke/backend__server.smoke.js"
+  ]
+}
