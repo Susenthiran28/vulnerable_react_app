@@ -61,7 +61,7 @@ app.post("/login", async (req, res) => {
     return res.status(401).json({ message: "Giriş başarısız!" });
   }
 
-  const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: "1h" });
+  const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: "1h", algorithm: "HS256" });
   res.json({ message: "Giriş başarılı!", token });
 });
 
@@ -73,7 +73,7 @@ app.get("/protected", (req, res) => {
     return res.status(403).json({ message: "Token gerekli!" });
   }
 
-  jwt.verify(token, SECRET_KEY, async (err, decoded) => {
+  jwt.verify(token, SECRET_KEY, { algorithms: ["HS256"] }, async (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Yetkisiz erişim!" });
     }
