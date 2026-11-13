@@ -39,7 +39,7 @@
     "object-inspect": "1.13.4",
     "path-to-regexp": "0.1.13",
     "proxy-addr": "2.0.8",
-    "qs": "6.14.2",
+    "qs": "6.16.1",
     "raw-body": "2.5.3",
     "send": "0.19.2",
     "serve-static": "1.16.3",
