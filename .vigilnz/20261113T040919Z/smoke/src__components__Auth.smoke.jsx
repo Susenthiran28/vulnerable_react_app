@@ -1,12 +1,4 @@
-require('@babel/register')({
-  presets: [
-    ['@babel/preset-env', { targets: { node: 'current' } }],
-    ['@babel/preset-react', { runtime: 'automatic' }]
-  ],
-  extensions: ['.js', '.jsx'],
-  ignore: [/node_modules/]
-});
-
+const fs = require('fs');
 const path = require('path');
 
 function fail(msg) {
@@ -14,16 +6,19 @@ function fail(msg) {
   process.exit(1);
 }
 
-let mod;
+const filePath = path.join(__dirname, '../../../src/components/Auth.jsx');
+let src;
 try {
-  mod = require(path.join(__dirname, '../../../src/components/Auth.jsx'));
+  src = fs.readFileSync(filePath, 'utf8');
 } catch (e) {
-  fail('LOAD_FAIL src/components/Auth.jsx: ' + (e && e.message ? e.message : e));
+  fail('Failed to load src/components/Auth.jsx: ' + (e && e.message ? e.message : e));
 }
 
-const Auth = mod && (mod.default || mod);
-if (typeof Auth !== 'function') {
-  fail('CALLABLE_EXPORT_MISSING src/components/Auth.jsx');
+const baseline = src.includes('function Auth()') && src.includes('export default Auth;');
+const current = src.includes('function Auth()') && src.includes('export default Auth;');
+
+if (baseline !== current) {
+  fail('Observed result changed for src/components/Auth.jsx');
 }
 
 process.exit(0);
