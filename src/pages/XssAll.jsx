@@ -3,16 +3,69 @@ import React, { useState, useRef, useEffect } from 'react';
 function XssAllExamples() {
   const [inputText, setInputText] = useState('');
   const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]);
   const [dynamicContent, setDynamicContent] = useState('');
   const [attributeValue, setAttributeValue] = useState('');
+  const [injectedText, setInjectedText] = useState('');
+  const [safeImageSrc, setSafeImageSrc] = useState('invalid.jpg');
+  const [safeBodyStyle, setSafeBodyStyle] = useState({});
   const [storageContent, setStorageContent] = useState('');
   const refInput = useRef(null);
+
+  const isSafeImageUrl = (value) => {
+    if (!value) return false;
+    const trimmed = value.trim();
+
+    if (trimmed.startsWith('/')) return true;
+
+    try {
+      const parsed = new URL(trimmed, window.location.origin);
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
+  const parseSafeCss = (cssText) => {
+    const allowed = {
+      color: /^#[0-9a-fA-F]{3,8}$|^[a-zA-Z]{1,20}$/,
+      backgroundColor: /^#[0-9a-fA-F]{3,8}$|^[a-zA-Z]{1,20}$/,
+      fontSize: /^\d{1,3}(px|em|rem|%)$/,
+    };
+
+    const nextStyle = {};
+    const declarations = (cssText || '').split(';');
+
+    declarations.forEach((declaration) => {
+      const [rawProp, rawValue] = declaration.split(':');
+      if (!rawProp || !rawValue) return;
+
+      const prop = rawProp.trim().toLowerCase();
+      const value = rawValue.trim();
+
+      const propMap = {
+        color: 'color',
+        'background-color': 'backgroundColor',
+        'font-size': 'fontSize',
+      };
+
+      const mappedProp = propMap[prop];
+      if (!mappedProp) return;
+
+      const pattern = allowed[mappedProp];
+      if (pattern && pattern.test(value)) {
+        nextStyle[mappedProp] = value;
+      }
+    });
+
+    return nextStyle;
+  };
 
   // Effect Hook for Storage-based XSS
   useEffect(() => {
     const storedData = localStorage.getItem('xssData');
     if (storedData) {
-      setStorageContent(storedData); // Render as text only unless sanitized HTML is explicitly required
+      setStorageContent(storedData); // Keep as plain text only; do not render as HTML.
     }
   }, []);
 
@@ -21,14 +74,8 @@ function XssAllExamples() {
   };
 
   const submitComment = () => {
-    const commentsContainer = document.getElementById('comments');
-    const commentNode = document.createElement('div');
-    const paragraph = document.createElement('p');
-
-    paragraph.textContent = comment;
-    commentNode.appendChild(paragraph);
-    commentsContainer.appendChild(commentNode);
-
+    if (!comment) return;
+    setComments((prev) => [...prev, comment]);
     setComment(''); // Reset comment input
   };
 
@@ -38,7 +85,7 @@ function XssAllExamples() {
   };
 
   return (
-    <div>
+    <div style={safeBodyStyle}>
       <h1>Comprehensive React XSS Demo</h1>
 
       <hr />
@@ -72,7 +119,13 @@ function XssAllExamples() {
           onChange={(e) => setComment(e.target.value)}
         />
         <button onClick={submitComment}>Post Comment</button>
-        <div id="comments" style={{ marginTop: '10px' }}></div>
+        <div id="comments" style={{ marginTop: '10px' }}>
+          {comments.map((item, index) => (
+            <div key={`${item}-${index}`}>
+              <p>{item}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <hr />
@@ -88,12 +141,12 @@ function XssAllExamples() {
         <button
           id="eventButton"
           onClick={() => {
-            document.getElementById('injectedButton').textContent = attributeValue;
+            setInjectedText(attributeValue);
           }}
         >
           Inject Payload
         </button>
-        <div id="injectedButton" style={{ marginTop: '10px' }}></div>
+        <div id="injectedButton" style={{ marginTop: '10px' }}>{injectedText}</div>
       </div>
 
       <hr />
@@ -106,12 +159,12 @@ function XssAllExamples() {
           placeholder="Enter malicious attribute"
           onChange={(e) => setAttributeValue(e.target.value)}
         />
-        <img src="invalid.jpg" alt="XSS Test" id="xssImage" />
+        <img src={safeImageSrc} alt="XSS Test" id="xssImage" />
         <button
           onClick={() => {
-            document
-              .getElementById('xssImage')
-              .setAttribute('src', attributeValue); // Vulnerable to Attribute Injection
+            if (isSafeImageUrl(attributeValue)) {
+              setSafeImageSrc(attributeValue.trim());
+            }
           }}
         >
           Inject Attribute
@@ -165,7 +218,7 @@ function XssAllExamples() {
         />
         <button
           onClick={() => {
-            document.body.style.cssText = inputText; // Vulnerable to CSS Injection
+            setSafeBodyStyle(parseSafeCss(inputText));
           }}
         >
           Apply CSS

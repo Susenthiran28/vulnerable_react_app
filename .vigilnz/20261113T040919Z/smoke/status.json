@@ -1,9 +1,9 @@
 {
   "targets": [
-    "src/components/XssTest.jsx"
+    "src/pages/Xss.jsx"
   ],
   "kept": null,
   "dropped": [
-    ".vigilnz/20261113T040919Z/smoke/src__components__XssTest.smoke.jsx (failed on current code)"
+    ".vigilnz/20261113T040919Z/smoke/src__pages__Xss.smoke.jsx (failed on current code)"
   ]
 }
