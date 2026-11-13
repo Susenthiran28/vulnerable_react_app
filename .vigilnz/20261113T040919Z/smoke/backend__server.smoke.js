@@ -1,26 +1,26 @@
 const path = require('path');
 
-function fail(msg, err) {
-  if (msg) console.error(msg);
-  if (err) console.error(err && err.stack ? err.stack : err);
+function fail(msg) {
+  console.error(msg);
   process.exit(1);
 }
 
-const target = path.join(__dirname, '../../../backend/server.js');
-
 let loaded;
 try {
-  loaded = require(target);
+  loaded = require(path.join(__dirname, '../../../backend/server.js'));
 } catch (e) {
-  fail('Failed to load backend/server.js', e);
+  fail('Failed to load ../../../backend/server.js: ' + (e && e.stack ? e.stack : e));
 }
 
+let observed;
 try {
-  if (typeof loaded === 'undefined') {
-    fail('Loaded module is undefined');
-  }
+  observed = typeof loaded;
 } catch (e) {
-  fail('Post-load validation failed', e);
+  fail('Loaded module access threw: ' + (e && e.stack ? e.stack : e));
+}
+
+if (observed !== 'object') {
+  fail('Behavior changed: expected typeof export to be "object", got ' + observed);
 }
 
 process.exit(0);
