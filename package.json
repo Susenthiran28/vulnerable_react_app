@@ -27,7 +27,9 @@
   },
   "name": "react_project",
   "overrides": {
+    "@babel/core": "7.29.6",
     "@babel/plugin-transform-modules-systemjs": "7.29.4",
+    "@tootallnate/once": "2.0.1",
     "axios": "1.20.0",
     "baseline-browser-mapping": "2.11.0",
     "brace-expansion": "2.1.7",
@@ -57,11 +59,13 @@
     "svgo": "2.8.4",
     "tr46": "4.1.1",
     "underscore": "1.13.8",
+    "uuid": "11.1.1",
     "webidl-conversions": "7.0.0",
     "webpack-dev-middleware": "7.4.6",
+    "webpack-dev-server": "5.2.6",
     "websocket-driver": "0.7.5",
     "whatwg-url": "13.0.0",
-    "ws": "7.5.11"
+    "ws": "8.20.1"
   },
   "private": true,
   "scripts": {
