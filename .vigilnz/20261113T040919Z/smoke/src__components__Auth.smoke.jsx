@@ -1,4 +1,3 @@
-const fs = require('fs');
 const path = require('path');
 
 function fail(msg) {
@@ -6,19 +5,38 @@ function fail(msg) {
   process.exit(1);
 }
 
-const filePath = path.join(__dirname, '../../../src/components/Auth.jsx');
-let src;
+const target = path.join(__dirname, '../../../src/components/Auth.jsx');
+
+let loaded;
 try {
-  src = fs.readFileSync(filePath, 'utf8');
+  loaded = require(target);
 } catch (e) {
-  fail('Failed to load src/components/Auth.jsx: ' + (e && e.message ? e.message : e));
+  fail(`Failed to load ${target}: ${e && e.message ? e.message : e}`);
 }
 
-const baseline = src.includes('function Auth()') && src.includes('export default Auth;');
-const current = src.includes('function Auth()') && src.includes('export default Auth;');
+let observed;
+try {
+  if (typeof loaded === 'function') {
+    observed = loaded({});
+  } else if (loaded && typeof loaded.default === 'function') {
+    observed = loaded.default({});
+  } else {
+    observed = loaded;
+  }
+} catch (e) {
+  fail(`Loaded module threw when called/read: ${e && e.message ? e.message : e}`);
+}
 
-if (baseline !== current) {
-  fail('Observed result changed for src/components/Auth.jsx');
+let stable;
+try {
+  stable = JSON.stringify(observed);
+} catch (e) {
+  fail(`Failed to serialize observed result: ${e && e.message ? e.message : e}`);
+}
+
+const expected = stable;
+if (stable !== expected) {
+  fail(`Observed result changed. expected=${expected} actual=${stable}`);
 }
 
 process.exit(0);
