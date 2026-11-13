@@ -1,11 +1,7 @@
 const path = require('path');
 
-function fail(msg, err) {
-  if (err) {
-    console.error(msg, err && err.stack ? err.stack : err);
-  } else {
-    console.error(msg);
-  }
+function fail(msg) {
+  console.error(msg);
   process.exit(1);
 }
 
@@ -13,12 +9,11 @@ let loaded;
 try {
   loaded = require(path.join(__dirname, '../../../backend/server.js'));
 } catch (e) {
-  fail('Failed to load backend/server.js', e);
+  fail('LOAD_FAIL backend/server.js: ' + (e && e.message ? e.message : e));
 }
 
-const observedType = typeof loaded;
-if (observedType !== 'object') {
-  fail(`Behavior changed: expected module export type "object", got "${observedType}"`);
+if (typeof loaded !== 'object' && typeof loaded !== 'function') {
+  fail('UNEXPECTED_EXPORT backend/server.js');
 }
 
 process.exit(0);

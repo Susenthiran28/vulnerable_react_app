@@ -1,0 +1,29 @@
+require('@babel/register')({
+  presets: [
+    ['@babel/preset-env', { targets: { node: 'current' } }],
+    ['@babel/preset-react', { runtime: 'automatic' }]
+  ],
+  extensions: ['.js', '.jsx'],
+  ignore: [/node_modules/]
+});
+
+const path = require('path');
+
+function fail(msg) {
+  console.error(msg);
+  process.exit(1);
+}
+
+let mod;
+try {
+  mod = require(path.join(__dirname, '../../../src/components/Auth.jsx'));
+} catch (e) {
+  fail('LOAD_FAIL src/components/Auth.jsx: ' + (e && e.message ? e.message : e));
+}
+
+const Auth = mod && (mod.default || mod);
+if (typeof Auth !== 'function') {
+  fail('CALLABLE_EXPORT_MISSING src/components/Auth.jsx');
+}
+
+process.exit(0);
