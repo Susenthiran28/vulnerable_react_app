@@ -4,21 +4,21 @@ function XssComplex() {
   const [inputText, setInputText] = useState('');
   const [comment, setComment] = useState('');
   const [output, setOutput] = useState('');
+  const [comments, setComments] = useState([]);
 
-  // Unsafe rendering using dangerouslySetInnerHTML
+  // Safe rendering as plain text
   const handleUnsafeRender = () => {
-    setOutput(inputText); // Unsafe state update
+    setOutput(inputText);
   };
 
-  // Simulate comment submission with direct DOM injection
+  // Safe comment submission using React state rendering
   const submitComment = () => {
-    const commentsContainer = document.getElementById('comments');
-    const commentNode = document.createElement('div');
+    const trimmedComment = comment.trim();
+    if (!trimmedComment) {
+      return;
+    }
 
-    // Vulnerability: Directly inserting HTML from user input
-    commentNode.innerHTML = `<p>${comment}</p>`;
-    commentsContainer.appendChild(commentNode);
-
+    setComments((prev) => [...prev, trimmedComment]);
     setComment(''); // Reset comment field
   };
 
@@ -35,10 +35,9 @@ function XssComplex() {
           onChange={(e) => setInputText(e.target.value)}
         />
         <button onClick={handleUnsafeRender}>Render Text</button>
-        <div
-          style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}
-          dangerouslySetInnerHTML={{ __html: output }}
-        />
+        <div style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}>
+          {output}
+        </div>
       </div>
 
       <hr />
@@ -54,7 +53,13 @@ function XssComplex() {
           onChange={(e) => setComment(e.target.value)}
         />
         <button onClick={submitComment}>Submit Comment</button>
-        <div id="comments" style={{ marginTop: '10px' }}></div>
+        <div id="comments" style={{ marginTop: '10px' }}>
+          {comments.map((item, index) => (
+            <div key={`${item}-${index}`}>
+              <p>{item}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <hr />
@@ -72,14 +77,10 @@ function XssComplex() {
           placeholder="Enter HTML payload"
           onChange={(e) => setOutput(e.target.value)}
         />
-        <button
-          onClick={() =>
-            document.getElementById('dynamic').innerHTML = output
-          }
-        >
+        <button onClick={() => setOutput(output)}>
           Inject Payload
         </button>
-        <div id="dynamic" style={{ marginTop: '10px' }}></div>
+        <div id="dynamic" style={{ marginTop: '10px' }}>{output}</div>
       </div>
     </div>
   );

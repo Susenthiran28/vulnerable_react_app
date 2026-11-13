@@ -12,19 +12,21 @@ function XssAllExamples() {
   useEffect(() => {
     const storedData = localStorage.getItem('xssData');
     if (storedData) {
-      setStorageContent(storedData); // Vulnerable to Storage-based XSS
+      setStorageContent(storedData); // Render as text only unless sanitized HTML is explicitly required
     }
   }, []);
 
   const handleUnsafeRender = () => {
-    setDynamicContent(inputText); // Vulnerable to unsafe state injection
+    setDynamicContent(inputText); // Render as text only unless sanitized HTML is explicitly required
   };
 
   const submitComment = () => {
     const commentsContainer = document.getElementById('comments');
     const commentNode = document.createElement('div');
+    const paragraph = document.createElement('p');
 
-    commentNode.innerHTML = `<p>${comment}</p>`; // Vulnerable to DOM Injection
+    paragraph.textContent = comment;
+    commentNode.appendChild(paragraph);
     commentsContainer.appendChild(commentNode);
 
     setComment(''); // Reset comment input
@@ -52,10 +54,9 @@ function XssAllExamples() {
           onChange={(e) => setInputText(e.target.value)}
         />
         <button onClick={handleUnsafeRender}>Render Content</button>
-        <div
-          style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}
-          dangerouslySetInnerHTML={{ __html: dynamicContent }}
-        />
+        <div style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}>
+          {dynamicContent}
+        </div>
       </div>
 
       <hr />
@@ -87,7 +88,7 @@ function XssAllExamples() {
         <button
           id="eventButton"
           onClick={() => {
-            document.getElementById('injectedButton').innerHTML = attributeValue;
+            document.getElementById('injectedButton').textContent = attributeValue;
           }}
         >
           Inject Payload
@@ -129,7 +130,7 @@ function XssAllExamples() {
         />
         <button onClick={saveToStorage}>Save to LocalStorage</button>
         <p>Stored Data:</p>
-        <div dangerouslySetInnerHTML={{ __html: storageContent }} />
+        <div>{storageContent}</div>
       </div>
 
       <hr />
