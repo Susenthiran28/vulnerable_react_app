@@ -1,9 +1,12 @@
 {
   "targets": [
-    "src/pages/Xss.jsx"
+    "backend/server.js",
+    "src/App.js",
+    "src/components/Auth.jsx",
+    "src/components/Profile.jsx",
+    "src/components/Search.jsx"
   ],
-  "kept": null,
-  "dropped": [
-    ".vigilnz/20261113T040919Z/smoke/src__pages__Xss.smoke.jsx (failed on current code)"
+  "kept": [
+    ".vigilnz/20261113T040919Z/smoke/backend__server.smoke.js"
   ]
 }

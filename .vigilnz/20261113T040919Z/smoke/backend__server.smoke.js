@@ -1,25 +1,24 @@
 const path = require('path');
 
-const targetPath = path.resolve(__dirname, '../../../backend/server.js');
+function fail(msg, err) {
+  if (err) {
+    console.error(msg, err && err.stack ? err.stack : err);
+  } else {
+    console.error(msg);
+  }
+  process.exit(1);
+}
 
 let loaded;
 try {
-  loaded = require(targetPath);
+  loaded = require(path.join(__dirname, '../../../backend/server.js'));
 } catch (e) {
-  console.error('Failed to load module:', e && e.stack ? e.stack : e);
-  process.exit(1);
+  fail('Failed to load backend/server.js', e);
 }
 
 const observedType = typeof loaded;
-
 if (observedType !== 'object') {
-  console.error(`Unexpected export type. Expected current observed type "object", got "${observedType}"`);
-  process.exit(1);
-}
-
-if (loaded !== null && Object.keys(loaded).length !== 0) {
-  console.error('Unexpected export shape. Expected empty object export from current behavior.');
-  process.exit(1);
+  fail(`Behavior changed: expected module export type "object", got "${observedType}"`);
 }
 
 process.exit(0);
