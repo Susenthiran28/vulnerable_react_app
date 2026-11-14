@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 
 const app = express();
 const PORT = 5000;
-const SECRET_KEY = "secretkey";
+const SECRET_KEY = process.env.JWT_SECRET;
 
 // Middleware
 app.use(cors());
@@ -55,24 +55,43 @@ app.post("/login", async (req, res) => {
     return res.status(400).json({ message: "Geçersiz giriş verileri!" });
   } */
 
+  if (!SECRET_KEY) {
+    return res.status(500).json({ message: "Sunucu yapılandırma hatası!" });
+  }
+
   const user = await User.findOne({ username, password });
 
   if (!user) {
     return res.status(401).json({ message: "Giriş başarısız!" });
   }
 
+  // HS256 requires the same shared secret for signing and verification.
   const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: "1h", algorithm: "HS256" });
   res.json({ message: "Giriş başarılı!", token });
 });
 
 // Korunan Route
 app.get("/protected", (req, res) => {
-  const token = req.headers["authorization"];
+  const authHeader = req.headers["authorization"];
 
-  if (!token) {
+  if (!authHeader) {
     return res.status(403).json({ message: "Token gerekli!" });
   }
 
+  if (!SECRET_KEY) {
+    return res.status(500).json({ message: "Sunucu yapılandırma hatası!" });
+  }
+
+  let token = authHeader;
+  if (authHeader.startsWith("Bearer ")) {
+    const parts = authHeader.split(" ");
+    if (parts.length !== 2 || !parts[1]) {
+      return res.status(401).json({ message: "Yetkisiz erişim!" });
+    }
+    token = parts[1];
+  }
+
+  // Keep HS256 allowlist strict to prevent algorithm confusion.
   jwt.verify(token, SECRET_KEY, { algorithms: ["HS256"] }, async (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Yetkisiz erişim!" });
@@ -90,5 +109,13 @@ app.get("/protected", (req, res) => {
   });
 });
 
-// Sunucu Başlat
-app.listen(PORT, () => console.log(`Sunucu ${PORT} portunda çalışıyor`));
+if (require.main === module) {
+  if (!SECRET_KEY) {
+    throw new Error("JWT_SECRET environment variable is required");
+  }
+
+  // Sunucu Başlat
+  app.listen(PORT, () => console.log(`Sunucu ${PORT} portunda çalışıyor`));
+}
+
+module.exports = app;
