@@ -11,7 +11,7 @@ function Profile() {
 
     if (token === Config.JWT_SECRET) {
       setData({
-        username: Config.DB_USERNAME,
+        username: Config.USERNAME,
         email: Config.SUPPORT_EMAIL,
         secret: 'SensitiveServerDataFromProfile',
       });

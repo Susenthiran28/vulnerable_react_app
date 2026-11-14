@@ -9,6 +9,7 @@ const jwt = require("jsonwebtoken");
 const app = express();
 const PORT = 5000;
 const SECRET_KEY = "secretkey";
+const JWT_ALGORITHMS = ["HS256"];
 
 // Middleware
 app.use(cors());
@@ -61,19 +62,22 @@ app.post("/login", async (req, res) => {
     return res.status(401).json({ message: "Giriş başarısız!" });
   }
 
-  const token = jwt.sign({ id: user._id }, SECRET_KEY, { expiresIn: "1h" });
+  const token = jwt.sign({ id: user._id }, SECRET_KEY, { algorithm: "HS256", expiresIn: "1h" });
   res.json({ message: "Giriş başarılı!", token });
 });
 
 // Korunan Route
 app.get("/protected", (req, res) => {
-  const token = req.headers["authorization"];
+  const authHeader = req.headers["authorization"];
+  const token = typeof authHeader === "string" && authHeader.startsWith("Bearer ")
+    ? authHeader.slice(7)
+    : authHeader;
 
   if (!token) {
     return res.status(403).json({ message: "Token gerekli!" });
   }
 
-  jwt.verify(token, SECRET_KEY, async (err, decoded) => {
+  jwt.verify(token, SECRET_KEY, { algorithms: JWT_ALGORITHMS }, async (err, decoded) => {
     if (err) {
       return res.status(401).json({ message: "Yetkisiz erişim!" });
     }
