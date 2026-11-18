@@ -4,19 +4,21 @@ function XssComplex() {
   const [inputText, setInputText] = useState('');
   const [comment, setComment] = useState('');
   const [output, setOutput] = useState('');
+  const [dynamicOutput, setDynamicOutput] = useState('');
 
-  // Unsafe rendering using dangerouslySetInnerHTML
+  // Safe rendering as plain text
   const handleUnsafeRender = () => {
-    setOutput(inputText); // Unsafe state update
+    setOutput(inputText);
   };
 
-  // Simulate comment submission with direct DOM injection
+  // Simulate comment submission with safe DOM text insertion
   const submitComment = () => {
     const commentsContainer = document.getElementById('comments');
     const commentNode = document.createElement('div');
+    const paragraph = document.createElement('p');
 
-    // Vulnerability: Directly inserting HTML from user input
-    commentNode.innerHTML = `<p>${comment}</p>`;
+    paragraph.textContent = comment;
+    commentNode.appendChild(paragraph);
     commentsContainer.appendChild(commentNode);
 
     setComment(''); // Reset comment field
@@ -37,8 +39,9 @@ function XssComplex() {
         <button onClick={handleUnsafeRender}>Render Text</button>
         <div
           style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}
-          dangerouslySetInnerHTML={{ __html: output }}
-        />
+        >
+          {output}
+        </div>
       </div>
 
       <hr />
@@ -73,13 +76,11 @@ function XssComplex() {
           onChange={(e) => setOutput(e.target.value)}
         />
         <button
-          onClick={() =>
-            document.getElementById('dynamic').innerHTML = output
-          }
+          onClick={() => setDynamicOutput(output)}
         >
           Inject Payload
         </button>
-        <div id="dynamic" style={{ marginTop: '10px' }}></div>
+        <div id="dynamic" style={{ marginTop: '10px' }}>{dynamicOutput}</div>
       </div>
     </div>
   );

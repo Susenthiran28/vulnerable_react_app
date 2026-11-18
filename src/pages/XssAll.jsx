@@ -12,26 +12,29 @@ function XssAllExamples() {
   useEffect(() => {
     const storedData = localStorage.getItem('xssData');
     if (storedData) {
-      setStorageContent(storedData); // Vulnerable to Storage-based XSS
+      setStorageContent(storedData); // Treat as untrusted text when rendering
     }
   }, []);
 
   const handleUnsafeRender = () => {
-    setDynamicContent(inputText); // Vulnerable to unsafe state injection
+    setDynamicContent(inputText); // Keep as text; do not execute as HTML
   };
 
   const submitComment = () => {
     const commentsContainer = document.getElementById('comments');
     const commentNode = document.createElement('div');
+    const paragraph = document.createElement('p');
 
-    commentNode.innerHTML = `<p>${comment}</p>`; // Vulnerable to DOM Injection
+    // Untrusted input must be written as text, not HTML.
+    paragraph.textContent = comment;
+    commentNode.appendChild(paragraph);
     commentsContainer.appendChild(commentNode);
 
     setComment(''); // Reset comment input
   };
 
   const saveToStorage = () => {
-    localStorage.setItem('xssData', inputText); // Save data insecurely
+    localStorage.setItem('xssData', inputText); // Saved value is rendered as text
     alert('Data saved to localStorage');
   };
 
@@ -52,10 +55,10 @@ function XssAllExamples() {
           onChange={(e) => setInputText(e.target.value)}
         />
         <button onClick={handleUnsafeRender}>Render Content</button>
-        <div
-          style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}
-          dangerouslySetInnerHTML={{ __html: dynamicContent }}
-        />
+        <div style={{ marginTop: '10px', color: 'red', fontWeight: 'bold' }}>
+          {/* Render untrusted content as plain text to avoid HTML/script execution */}
+          {dynamicContent}
+        </div>
       </div>
 
       <hr />
@@ -87,7 +90,8 @@ function XssAllExamples() {
         <button
           id="eventButton"
           onClick={() => {
-            document.getElementById('injectedButton').innerHTML = attributeValue;
+            // Untrusted input must be text-only.
+            document.getElementById('injectedButton').textContent = attributeValue;
           }}
         >
           Inject Payload
@@ -129,7 +133,7 @@ function XssAllExamples() {
         />
         <button onClick={saveToStorage}>Save to LocalStorage</button>
         <p>Stored Data:</p>
-        <div dangerouslySetInnerHTML={{ __html: storageContent }} />
+        <div>{storageContent}</div>
       </div>
 
       <hr />
