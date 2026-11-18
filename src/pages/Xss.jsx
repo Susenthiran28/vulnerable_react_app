@@ -3,24 +3,27 @@ import React, { useState } from 'react';
 function XssComplex() {
   const [inputText, setInputText] = useState('');
   const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]);
   const [output, setOutput] = useState('');
   const [dynamicOutput, setDynamicOutput] = useState('');
 
   // Safe rendering as plain text
   const handleUnsafeRender = () => {
+    if (!inputText.trim()) {
+      setOutput('');
+      return;
+    }
     setOutput(inputText);
   };
 
-  // Simulate comment submission with safe DOM text insertion
+  // Submit comment using React state and escaped text rendering
   const submitComment = () => {
-    const commentsContainer = document.getElementById('comments');
-    const commentNode = document.createElement('div');
-    const paragraph = document.createElement('p');
+    if (!comment.trim()) {
+      setComment('');
+      return;
+    }
 
-    paragraph.textContent = comment;
-    commentNode.appendChild(paragraph);
-    commentsContainer.appendChild(commentNode);
-
+    setComments((prev) => [...prev, comment]);
     setComment(''); // Reset comment field
   };
 
@@ -28,9 +31,9 @@ function XssComplex() {
     <div>
       <h2>Complex XSS Test Page</h2>
 
-      {/* Example 1: Unsafe input rendering */}
+      {/* Example 1: Escaped text rendering */}
       <div>
-        <h3>Unsafe Text Output</h3>
+        <h3>Text Output (Escaped)</h3>
         <input
           type="text"
           placeholder="Enter text"
@@ -46,9 +49,9 @@ function XssComplex() {
 
       <hr />
 
-      {/* Example 2: Comment Section Vulnerability */}
+      {/* Example 2: Comment section rendered via React state */}
       <div>
-        <h3>Submit Comment (DOM Injection)</h3>
+        <h3>Submit Comment (Escaped Text)</h3>
         <textarea
           placeholder="Enter your comment"
           rows="3"
@@ -57,14 +60,20 @@ function XssComplex() {
           onChange={(e) => setComment(e.target.value)}
         />
         <button onClick={submitComment}>Submit Comment</button>
-        <div id="comments" style={{ marginTop: '10px' }}></div>
+        <div id="comments" style={{ marginTop: '10px' }}>
+          {comments.map((item, index) => (
+            <div key={`${index}-${item}`}>
+              <p>{item}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <hr />
 
-      {/* Example 3: Inline Event Handler XSS */}
+      {/* Example 3: Escaped payload display test */}
       <div>
-        <h3>Inline Event XSS Test</h3>
+        <h3>Escaped Payload Display Test</h3>
         <p>Enter a payload like:</p>
         <code>
           &lt;img src="invalid" onerror="alert('XSS Triggered!')" /&gt;

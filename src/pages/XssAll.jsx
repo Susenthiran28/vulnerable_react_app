@@ -8,6 +8,65 @@ function XssAllExamples() {
   const [storageContent, setStorageContent] = useState('');
   const refInput = useRef(null);
 
+  const isSafeImageSrc = (value) => {
+    if (!value) return false;
+    const trimmed = value.trim();
+    if (trimmed.startsWith('/')) return true;
+
+    try {
+      const parsed = new URL(trimmed, window.location.origin);
+      return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
+  const applySafeStyles = (rawStyles) => {
+    const safeProps = {
+      color: (v) => /^[a-zA-Z\s#(),.%0-9-]{1,50}$/.test(v),
+      backgroundColor: (v) => /^[a-zA-Z\s#(),.%0-9-]{1,50}$/.test(v),
+      fontSize: (v) => /^\d{1,3}(px|em|rem|%)$/.test(v),
+      margin: (v) => /^\d{1,3}(px|em|rem|%)$/.test(v),
+      padding: (v) => /^\d{1,3}(px|em|rem|%)$/.test(v),
+    };
+
+    const styleMap = {
+      color: '',
+      backgroundColor: '',
+      fontSize: '',
+      margin: '',
+      padding: '',
+    };
+
+    rawStyles
+      .split(';')
+      .map((r) => r.trim())
+      .filter(Boolean)
+      .forEach((rule) => {
+        const [rawProp, rawVal] = rule.split(':');
+        if (!rawProp || !rawVal) return;
+        const prop = rawProp.trim();
+        const val = rawVal.trim();
+
+        const normalizedProp =
+          prop === 'background-color'
+            ? 'backgroundColor'
+            : prop === 'font-size'
+              ? 'fontSize'
+              : prop;
+
+        if (safeProps[normalizedProp] && safeProps[normalizedProp](val)) {
+          styleMap[normalizedProp] = val;
+        }
+      });
+
+    document.body.style.color = styleMap.color;
+    document.body.style.backgroundColor = styleMap.backgroundColor;
+    document.body.style.fontSize = styleMap.fontSize;
+    document.body.style.margin = styleMap.margin;
+    document.body.style.padding = styleMap.padding;
+  };
+
   // Effect Hook for Storage-based XSS
   useEffect(() => {
     const storedData = localStorage.getItem('xssData');
@@ -22,6 +81,8 @@ function XssAllExamples() {
 
   const submitComment = () => {
     const commentsContainer = document.getElementById('comments');
+    if (!commentsContainer) return;
+
     const commentNode = document.createElement('div');
     const paragraph = document.createElement('p');
 
@@ -91,7 +152,9 @@ function XssAllExamples() {
           id="eventButton"
           onClick={() => {
             // Untrusted input must be text-only.
-            document.getElementById('injectedButton').textContent = attributeValue;
+            const injectedTarget = document.getElementById('injectedButton');
+            if (!injectedTarget) return;
+            injectedTarget.textContent = attributeValue;
           }}
         >
           Inject Payload
@@ -112,9 +175,10 @@ function XssAllExamples() {
         <img src="invalid.jpg" alt="XSS Test" id="xssImage" />
         <button
           onClick={() => {
-            document
-              .getElementById('xssImage')
-              .setAttribute('src', attributeValue); // Vulnerable to Attribute Injection
+            const image = document.getElementById('xssImage');
+            if (!image) return;
+            const safeSrc = isSafeImageSrc(attributeValue) ? attributeValue.trim() : 'invalid.jpg';
+            image.setAttribute('src', safeSrc);
           }}
         >
           Inject Attribute
@@ -168,7 +232,7 @@ function XssAllExamples() {
         />
         <button
           onClick={() => {
-            document.body.style.cssText = inputText; // Vulnerable to CSS Injection
+            applySafeStyles(inputText);
           }}
         >
           Apply CSS
