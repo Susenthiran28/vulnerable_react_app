@@ -13,7 +13,6 @@ import PrivateRoute from './pages/nosql/PrivateRoute';
 import ProtectedPage from './pages/nosql/ProtectedPage';
 import Register from './pages/nosql/Register';
 
-
 function App() {
   return (
     <Router>
